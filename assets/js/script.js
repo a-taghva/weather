@@ -6,6 +6,7 @@ let ulEl = $("ul");
 let resultDiv = $(".result");
 let todayDivEl = $(".result-today");
 let resultForecastDiv = $(".result-forecast");
+let dlt = $(".delete");
 let today = moment().format(" (DD/MM/YYYY)");
 
 $(searchBtn).on("click", (event) => {
@@ -43,19 +44,19 @@ function createResultSection(ctname, date, iconUrl, temp, humid, ws, uv) {
         .text("Tempereature: ")
         .append($("<span>")
             .attr("id", "temperature")
-            .text(temp));
+            .text(`${temp} °C`));
 
     let humidityEl = $("<p>")
         .text("Humidity: ")
         .append($("<span>")
             .attr("id", "humidity")
-            .text(humid));
+            .text(`${humid}%`));
 
     let windEl = $("<p>")
         .text("Wind Speed: ")
         .append($("<span>")
             .attr("id", "wind-speed")
-            .text(ws));
+            .text(`${ws} MPH`));
 
     let uvEl = $("<p>")
         .text("UV Index: ")
@@ -82,11 +83,11 @@ function createForecastSection(date, iconUrl, temp, humid) {
 
     let tempEl = $("<p>")
         .addClass("card-text")
-        .text(`Temp: ${temp}`);
+        .text(`Temp: ${temp} °C`);
 
     let humidEl = $("<p>")
         .addClass("card-text")
-        .text(`Humidity: ${humid}`);
+        .text(`Humidity: ${humid}%`);
 
     cardDivEl.append(cardTitle, statusIcon, tempEl, humidEl);
     resultForecastDiv.append(cardDivEl);
@@ -166,7 +167,6 @@ function searchCity(cityName) {
                         response.json().then(data => {
                             resultForecastDiv.text("");
                             for (let i = 0; i < 5; i++) {
-                                console.log(data);
                                 let thisDay = data.list[i*8 + 3];
                                 let date = moment().add(i+1, 'days').format("MM/DD/YYYY");
                                 let iconId = thisDay.weather[0].icon;
@@ -193,6 +193,12 @@ $(ulEl).on("click", (e)=> {
     let ctname = liEl.text();
     searchCity(ctname);
 })
+
+$(dlt).on("click", () => {
+    localStorage.clear();
+    ulEl.text("");
+})
+
 
 loadCities();
 createSearchedCitiesSection(savedCities);

@@ -5,3 +5,20 @@
 .list-group-item:active {
     background: #aaa;
 }
+
+i {
+    margin-right: 10px;
+}
+
+.delete {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.trash:hover {
+    cursor: pointer;
+}
+
+.trash:active {
+    color: red;
+}
