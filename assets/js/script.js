@@ -2,7 +2,7 @@ let cityInput = $("#city-search");
 let searchBtn = $(".search-btn");
 const apiKey = '2408a1d36393718a3319e00c5a057fac';
 let savedCities = [];
-let listEl;
+let ulEl = $("ul");
 let resultDiv = $(".result");
 let todayDivEl = $(".result-today");
 let resultForecastDiv = $(".result-forecast");
@@ -100,18 +100,14 @@ function createSearchedCitiesSection(ctArr) {
         ulEl.append(liEl);
     }
 
-    listItemEl = $('.list-group-item');
-
 }
 
 function addSearchCityLi (ctname) {
-    let ulEl = $("ul");
     let liEl = $("<li>")
         .addClass("list-group-item")
         .text(ctname);
 
     ulEl.prepend(liEl);
-    listItemEl = $('list-group-item');
 }
 
 function saveCity(ctname) {
@@ -123,6 +119,7 @@ function saveCity(ctname) {
     if (!isIncluded) {
         savedCities.push(ctname);
         localStorage.setItem("cities", JSON.stringify(savedCities));
+        addSearchCityLi(ctname);
     }
 }
 
@@ -135,19 +132,18 @@ function loadCities() {
 
 
 function searchCity(cityName) {
-    let apiUrl = `http://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}`
+    let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}`
     fetch(apiUrl).then(response => {
         if (response.ok) {
             response.json().then(data => {
                 let cityName = data.name;
-                addSearchCityLi(cityName);
                 let temp = (data.main.temp - 273.15).toFixed(2);
                 let wind = data.wind.speed;
                 let humidity = data.main.humidity;
 
                 let lat = data.coord.lat;
                 let lon = data.coord.lon;
-                let uvIndexUrl = `http://api.openweathermap.org/data/2.5/uvi?lat=${lat}&lon=${lon}&appid=${apiKey}`
+                let uvIndexUrl = `https://api.openweathermap.org/data/2.5/uvi?lat=${lat}&lon=${lon}&appid=${apiKey}`
 
                 fetch(uvIndexUrl).then(response => {
                     if (response.ok) {
@@ -175,7 +171,6 @@ function searchCity(cityName) {
                         })
                     }
                 });
-                debugger;
             saveCity(cityName);
             })
         } else {
@@ -184,8 +179,10 @@ function searchCity(cityName) {
     })
 }
 
-$(listEl).on("click", ()=> {
-    alert("clicked");
+$(ulEl).on("click", (e)=> {
+    let liEl = $(e.target);
+    let ctname = liEl.text();
+    searchCity(ctname);
 })
 
 loadCities();
