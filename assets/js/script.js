@@ -23,7 +23,7 @@ $(searchBtn).on("click", (event) => {
     }
 });
 
-function createResultSection(ctname, date, temp, humid, ws, uv) {
+function createResultSection(ctname, date, iconUrl, temp, humid, ws, uv) {
     todayDivEl.text("");
     todayDivEl.addClass("border");
 
@@ -35,8 +35,9 @@ function createResultSection(ctname, date, temp, humid, ws, uv) {
         .append($("<span>")
             .attr("id", "date")
             .text(date))
-        .append($("<span>")
-            .attr("id", "status-icon"));
+        .append($("<img>")
+            .attr("id", "status-icon")
+            .attr("src", iconUrl));
 
     let tempEl = $("<p>")
         .text("Tempereature: ")
@@ -66,7 +67,7 @@ function createResultSection(ctname, date, temp, humid, ws, uv) {
     todayDivEl.append(h2El, tempEl, humidityEl, windEl, uvEl);
 }
 
-function createForecastSection(date, temp, humid) {
+function createForecastSection(date, iconUrl, temp, humid) {
 
     let cardDivEl = $("<div>")
         .addClass("card bg-primary text-light p-2 col-auto mt-2");
@@ -75,8 +76,9 @@ function createForecastSection(date, temp, humid) {
         .addClass("card-title")
         .text(date);
 
-    let statusIcon = $("<div>")
-        .addClass("status-icon");
+    let statusIcon = $("<img>")
+        .attr("src", iconUrl)
+        .css("width", "50");
 
     let tempEl = $("<p>")
         .addClass("card-text")
@@ -138,6 +140,8 @@ function searchCity(cityName) {
         if (response.ok) {
             response.json().then(data => {
                 let cityName = data.name;
+                let iconId = data.weather[0].icon;
+                let iconUrl = `http://openweathermap.org/img/wn/${iconId}@2x.png`;
                 let temp = (data.main.temp - 273.15).toFixed(2);
                 let wind = data.wind.speed;
                 let humidity = data.main.humidity;
@@ -150,7 +154,7 @@ function searchCity(cityName) {
                     if (response.ok) {
                         response.json().then(data => {
                             let uvIndex = data.value;
-                            createResultSection(cityName, today, temp, humidity, wind, uvIndex)
+                            createResultSection(cityName, today, iconUrl, temp, humidity, wind, uvIndex)
                         })
                     }
                 });
@@ -162,12 +166,15 @@ function searchCity(cityName) {
                         response.json().then(data => {
                             resultForecastDiv.text("");
                             for (let i = 0; i < 5; i++) {
+                                console.log(data);
                                 let thisDay = data.list[i*8 + 3];
                                 let date = moment().add(i+1, 'days').format("MM/DD/YYYY");
+                                let iconId = thisDay.weather[0].icon;
+                                let iconUrl = `http://openweathermap.org/img/wn/${iconId}@2x.png`
                                 let temp = thisDay.main.temp;
                                 let humidity = thisDay.main.humidity;
                                 let icon = thisDay.weather.icon;
-                                createForecastSection(date, temp, humidity);
+                                createForecastSection(date, iconUrl, temp, humidity);
                             }
 
                         })
