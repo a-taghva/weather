@@ -196,7 +196,9 @@ $(ulEl).on("click", (e)=> {
 
 $(dlt).on("click", () => {
     localStorage.clear();
-    ulEl.text("");
+    console.log("before", ulEl);
+    $(".list-group-item").remove();
+    console.log("after", ulEl);
 })
 
 
