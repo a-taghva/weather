@@ -1,0 +1,7 @@
+.list-group-item:hover {
+    cursor: pointer;
+}
+
+.list-group-item:active {
+    background: #aaa;
+}

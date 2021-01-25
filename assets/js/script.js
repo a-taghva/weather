@@ -24,7 +24,7 @@ $(searchBtn).on("click", (event) => {
 });
 
 function createResultSection(ctname, date, temp, humid, ws, uv) {
-    //$(".result").html("");
+    todayDivEl.text("");
     todayDivEl.addClass("border");
 
     let h2El = $("<h2>")
@@ -67,6 +67,7 @@ function createResultSection(ctname, date, temp, humid, ws, uv) {
 }
 
 function createForecastSection(date, temp, humid) {
+
     let cardDivEl = $("<div>")
         .addClass("card bg-primary text-light p-2 col-auto mt-2");
 
@@ -159,6 +160,7 @@ function searchCity(cityName) {
                 fetch(forecastUrl).then(response => {
                     if (response.ok) {
                         response.json().then(data => {
+                            resultForecastDiv.text("");
                             for (let i = 0; i < 5; i++) {
                                 let thisDay = data.list[i*8 + 3];
                                 let date = moment().add(i+1, 'days').format("MM/DD/YYYY");
